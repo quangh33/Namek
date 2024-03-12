@@ -9,8 +9,9 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class Namek {
+    private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
-
+    static boolean hadRuntimeError = false;
     private static void run(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
@@ -21,13 +22,16 @@ public class Namek {
 
         Parser parser = new Parser(tokens);
         Expr expression = parser.parse();
-        System.out.println(hadError);
+        if (expression != null) {
+            interpreter.interpret(expression);
+        }
     }
 
     private static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
         if (hadError) System.exit(65);
+        if (hadRuntimeError) System.exit(70);
     }
 
     private static void runPrompt() throws IOException {
@@ -61,10 +65,16 @@ public class Namek {
         hadError = true;
     }
 
+    static void runtimeError(RuntimeErr err) {
+        System.err.println(err.getMessage() +
+                "\n[line " + err.op.line + "]");
+        hadRuntimeError = true;
+    }
+
     public static void main(String[] args) throws IOException {
         System.out.println("Hello, this is Namek programming language interpreter!");
         if (args.length > 1) {
-            System.out.println("Usage: jlox [script]");
+            System.out.println("Usage: Namek [script]");
             System.exit(64);
         } else if (args.length == 1) {
             runFile(args[0]);

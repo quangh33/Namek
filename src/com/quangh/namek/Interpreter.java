@@ -11,6 +11,16 @@ public class Interpreter implements Expr.Visitor<Object> {
         return a.equals(b);
     }
 
+    private void checkNumberOperand(Token operator, Object operand) {
+        if (operand instanceof Double) return;
+        throw new RuntimeErr(operator, "Operand must be a number");
+    }
+
+    private void checkNumberOperands(Token operator, Object left, Object right) {
+        if (left instanceof Double && right instanceof Double) return;
+        throw new RuntimeErr(operator, "Operands must be a number");
+    }
+
     @Override
     public Object visitBinary(Expr.Binary b) {
         Object left = eval(b.left);
@@ -18,10 +28,13 @@ public class Interpreter implements Expr.Visitor<Object> {
 
         switch (b.op.type) {
             case SLASH:
+                checkNumberOperands(b.op, left, right);
                 return (double) left / (double) right;
             case STAR:
+                checkNumberOperands(b.op, left, right);
                 return (double) left * (double) right;
             case MINUS:
+                checkNumberOperands(b.op, left, right);
                 return (double) left - (double) right;
             case PLUS:
                 if (left instanceof Double && right instanceof Double) {
@@ -31,13 +44,19 @@ public class Interpreter implements Expr.Visitor<Object> {
                 if (left instanceof String && right instanceof String) {
                     return (String) left + (String) right;
                 }
+
+                throw new RuntimeErr(b.op, "Operands must be number or string");
             case GREATER:
+                checkNumberOperands(b.op, left, right);
                 return (double) left > (double) right;
             case GREATER_EQUAL:
+                checkNumberOperands(b.op, left, right);
                 return (double) left >= (double) right;
             case LESS:
+                checkNumberOperands(b.op, left, right);
                 return (double) left < (double) right;
             case LESS_EQUAL:
+                checkNumberOperands(b.op, left, right);
                 return (double) left <= (double) right;
             case BANG_EQUAL:
                 return !isEqual(left, right);
@@ -48,7 +67,6 @@ public class Interpreter implements Expr.Visitor<Object> {
         return null;
     }
 
-
     @Override
     public Object visitGrouping(Expr.Grouping g) {
         return eval(g.expr);
@@ -58,6 +76,7 @@ public class Interpreter implements Expr.Visitor<Object> {
     public Object visitUnary(Expr.Unary u) {
         Object right = eval(u.expr);
         if (u.op.type == TokenType.MINUS) {
+            checkNumberOperand(u.op, right);
             return -(double) right;
         }
 
@@ -73,5 +92,21 @@ public class Interpreter implements Expr.Visitor<Object> {
     @Override
     public Object visitLiteral(Expr.Literal l) {
         return l.value;
+    }
+
+    public void interpret(Expr expr) {
+        try {
+            Object value = eval(expr);
+            String text = value.toString();
+            if (value instanceof Double) {
+                if (text.endsWith(".0")) {
+                    text = text.substring(0, text.length() - 2);
+                }
+            }
+            System.out.println(text);
+
+        } catch (RuntimeErr err) {
+            Namek.runtimeError(err);
+        }
     }
 }
