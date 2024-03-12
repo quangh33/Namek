@@ -24,6 +24,9 @@ This project implements 3 main parts of an interpreter:
   - input: syntax tree
   - output: code execution outcome
 
+  In this first version, we implement a simple kind of interpreter named Tree-walk interpreters,
+  it traverses the Syntax tree and evaluates as it goes.
+
 ## Grammar
 
 ```
