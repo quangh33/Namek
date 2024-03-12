@@ -1,7 +1,7 @@
 # Namek - The programming language of Namekian
 
-This project implements 3 main part of an interpreter:
-- Scanner:
+This project implements 3 main parts of an interpreter:
+1. Scanner:
   - input: user code, i.e. Namek code
   - output: a list of tokens. Namek supports following tokens
   ```
@@ -16,10 +16,11 @@ This project implements 3 main part of an interpreter:
                 for, fun, if, nil, or, print,
                 super, return, this, var, while, eof
   ```
-- Parser
+
+2. Parser
   - input: list of token (i.e. Scanner's output)
   - output: syntax tree
-- Interpreter:
+3. Interpreter:
   - input: syntax tree
   - output: code execution outcome
 
