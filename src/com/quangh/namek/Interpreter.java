@@ -45,6 +45,11 @@ public class Interpreter implements Expr.Visitor<Object> {
                     return (String) left + (String) right;
                 }
 
+                if ((left instanceof String && right instanceof Double) ||
+                        (left instanceof Double && right instanceof String)) {
+                    return left.toString() + right;
+                }
+
                 throw new RuntimeErr(b.op, "Operands must be number or string");
             case GREATER:
                 checkNumberOperands(b.op, left, right);
