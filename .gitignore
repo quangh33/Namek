@@ -2,6 +2,7 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+/.idea/*
 
 ### Eclipse ###
 .apt_generated
@@ -21,7 +22,6 @@ bin/
 /dist/
 /nbdist/
 /.nb-gradle/
-/.idea
 
 ### VS Code ###
 .vscode/
