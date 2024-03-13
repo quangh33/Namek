@@ -40,3 +40,6 @@ unary          → ( "!" | "-" ) unary
 primary        → NUMBER | STRING | "true" | "false" | "nil"
                | "(" expression ")" ;
 ```
+
+## Syntax tree
+![](images/syntax_tree.jpg)
