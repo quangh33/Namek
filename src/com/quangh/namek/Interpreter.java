@@ -1,6 +1,8 @@
 package com.quangh.namek;
 
-public class Interpreter implements Expr.Visitor<Object> {
+import java.util.List;
+
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private Object eval(Expr e) {
         return e.accept(this);
     }
@@ -102,12 +104,11 @@ public class Interpreter implements Expr.Visitor<Object> {
         return l.value;
     }
 
-    public void interpret(Expr expr) {
+    public void interpret(List<Stmt> stmts) {
         try {
-            Object value = eval(expr);
-            String text = stringify(value);
-            System.out.println(text);
-
+            for (Stmt s: stmts) {
+                s.accept(this);
+            }
         } catch (RuntimeErr err) {
             Namek.runtimeError(err);
         }
@@ -121,5 +122,18 @@ public class Interpreter implements Expr.Visitor<Object> {
             }
         }
         return text;
+    }
+
+    @Override
+    public Void visitExpressionStmt(Stmt.Expression s) {
+        eval(s.expression);
+        return null;
+    }
+
+    @Override
+    public Void visitPrintStmt(Stmt.Print p) {
+        Object res = eval(p.expression);
+        System.out.println(stringify(res));
+        return null;
     }
 }

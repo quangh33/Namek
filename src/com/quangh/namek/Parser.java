@@ -1,9 +1,12 @@
 package com.quangh.namek;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
-    private static class ParseError extends RuntimeException {}
+    private static class ParseError extends RuntimeException {
+    }
+
     private final List<Token> tokens;
     private int current = 0;
 
@@ -12,11 +15,15 @@ public class Parser {
         this.tokens = tokens;
     }
 
-    Expr parse() {
+    List<Stmt> parse() {
+        List<Stmt> statements = new ArrayList<>();
         try {
-            return expression();
-        } catch (ParseError e) {
-            return null;
+            while (!isAtEnd()) {
+                statements.add(statement());
+            }
+            return statements;
+        } catch (ParseError err) {
+            return List.of();
         }
     }
 
@@ -25,7 +32,35 @@ public class Parser {
         return new ParseError();
     }
 
-    // primary → NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")";
+    // statement -> printStatement | expressionStatement;
+    private Stmt statement() {
+        if (match(TokenType.PRINT)) {
+            return printStatement();
+        }
+        return expressionStatement();
+    }
+
+    // expressionStatement -> expression ";";
+    private Stmt expressionStatement() {
+        Expr value = expression();
+        if (!check(TokenType.SEMICOLON)) {
+            throw error(peek(), "Expect ';' after expression.");
+        }
+        advance();
+        return new Stmt.Expression(value);
+    }
+
+    // printStatement -> "print" expression ";";
+    private Stmt printStatement() {
+        Expr value = expression();
+        if (!check(TokenType.SEMICOLON)) {
+            throw error(peek(), "Expect ';' after expression.");
+        }
+        advance();
+        return new Stmt.Print(value);
+    }
+
+    // primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")";
     private Expr primary() {
         if (match(TokenType.FALSE)) return new Expr.Literal(false);
         if (match(TokenType.TRUE)) return new Expr.Literal(true);
@@ -45,7 +80,7 @@ public class Parser {
         throw error(peek(), "Expect expression.");
     }
 
-    // unary → ( "!" | "-" ) unary | primary ;
+    // unary -> ( "!" | "-" ) unary | primary ;
     private Expr unary() {
         if (match(TokenType.BANG, TokenType.MINUS)) {
             Token op = prev();
@@ -56,7 +91,7 @@ public class Parser {
         return primary();
     }
 
-    // factor → unary ( ( "/" | "*" ) unary )* ;
+    // factor -> unary ( ( "/" | "*" ) unary )* ;
     private Expr factor() {
         Expr left = unary();
         while (match(TokenType.STAR, TokenType.SLASH)) {
@@ -67,7 +102,7 @@ public class Parser {
         return left;
     }
 
-    // term → factor ( ( "+" | "-" ) factor )* ;
+    // term -> factor ( ( "+" | "-" ) factor )* ;
     private Expr term() {
         Expr left = factor();
         while (match(TokenType.PLUS, TokenType.MINUS)) {
@@ -78,7 +113,7 @@ public class Parser {
         return left;
     }
 
-    // comparison → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+    // comparison -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
     private Expr comparison() {
         Expr left = term();
         while (match(TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL)) {
@@ -89,7 +124,7 @@ public class Parser {
         return left;
     }
 
-    // equality → comparison ( ( "!=" | "==" ) comparison )* ;
+    // equality -> comparison ( ( "!=" | "==" ) comparison )* ;
     private Expr equality() {
         Expr left = comparison();
         while (match(TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL)) {

@@ -30,6 +30,9 @@ This project implements 3 main parts of an interpreter:
 ## Grammar
 
 ```
+statement      → expressionStmt | printStmt ;
+expressionStmt → expression ";" ;
+printStmt      → "print" expression ";" ;  
 expression     → equality ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;

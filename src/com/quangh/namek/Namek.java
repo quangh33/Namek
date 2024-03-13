@@ -17,15 +17,14 @@ public class Namek {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
 
-        for (Token t : tokens) {
-            System.out.println(t);
-        }
+//        for (Token t : tokens) {
+//            System.out.println(t);
+//        }
 
         Parser parser = new Parser(tokens);
-        Expr expression = parser.parse();
-        if (expression != null) {
-            interpreter.interpret(expression);
-        }
+        List<Stmt> statements = parser.parse();
+        if (hadError) return;
+        interpreter.interpret(statements);
     }
 
     private static void runFile(String path) throws IOException {
