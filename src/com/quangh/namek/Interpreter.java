@@ -29,6 +29,9 @@ public class Interpreter implements Expr.Visitor<Object> {
         switch (b.op.type) {
             case SLASH:
                 checkNumberOperands(b.op, left, right);
+                if ((double) right == 0.0) {
+                    throw new RuntimeErr(b.op, "Division by zero");
+                }
                 return (double) left / (double) right;
             case STAR:
                 checkNumberOperands(b.op, left, right);
@@ -47,7 +50,7 @@ public class Interpreter implements Expr.Visitor<Object> {
 
                 if ((left instanceof String && right instanceof Double) ||
                         (left instanceof Double && right instanceof String)) {
-                    return left.toString() + right;
+                    return stringify(left) + stringify(right);
                 }
 
                 throw new RuntimeErr(b.op, "Operands must be number or string");
@@ -102,16 +105,21 @@ public class Interpreter implements Expr.Visitor<Object> {
     public void interpret(Expr expr) {
         try {
             Object value = eval(expr);
-            String text = value.toString();
-            if (value instanceof Double) {
-                if (text.endsWith(".0")) {
-                    text = text.substring(0, text.length() - 2);
-                }
-            }
+            String text = stringify(value);
             System.out.println(text);
 
         } catch (RuntimeErr err) {
             Namek.runtimeError(err);
         }
+    }
+
+    private String stringify(Object x) {
+        String text = x.toString();
+        if (x instanceof Double) {
+            if (text.endsWith(".0")) {
+                text = text.substring(0, text.length() - 2);
+            }
+        }
+        return text;
     }
 }

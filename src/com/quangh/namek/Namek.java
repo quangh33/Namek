@@ -12,6 +12,7 @@ public class Namek {
     private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
+
     private static void run(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
@@ -60,14 +61,13 @@ public class Namek {
     }
 
     private static void report(int line, String where, String message) {
-        System.err.println(
+        System.out.println(
                 "[line " + line + "] Error" + where + ": " + message);
         hadError = true;
     }
 
     static void runtimeError(RuntimeErr err) {
-        System.err.println(err.getMessage() +
-                "\n[line " + err.op.line + "]");
+        System.out.println("[line " + err.op.line + "] Error: " + err.getMessage());
         hadRuntimeError = true;
     }
 

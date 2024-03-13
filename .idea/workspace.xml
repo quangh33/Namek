@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8a0f5317-0fcb-4c96-882d-a2a89f4938e9" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/quangh/namek/Interpreter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/quangh/namek/Interpreter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/quangh/namek/Namek.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/quangh/namek/Namek.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +82,7 @@
       <option name="presentableId" value="Default" />
       <updated>1709358289017</updated>
       <workItem from="1709358291122" duration="9925000" />
-      <workItem from="1710163326824" duration="10464000" />
+      <workItem from="1710163326824" duration="11292000" />
     </task>
     <servers />
   </component>
